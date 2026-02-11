@@ -16,13 +16,17 @@ describe('HealthController (e2e)', () => {
   });
 
   it('/health (GET)', async () => {
-    const response: request.Response = await request(app.getHttpServer()).get(
-      '/health',
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const response = await request(app.getHttpServer())
+      .get('/health')
+      .expect(200);
 
     expect(response.status).toBe(200);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(response.body.status).toBe('ok');
+
     expect(response.body).toHaveProperty('uptime');
+
     expect(response.body).toHaveProperty('version');
   });
 
