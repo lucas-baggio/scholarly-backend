@@ -1,30 +1,35 @@
 import { User } from '../../../../modules/users/domain/user.entity';
 
 describe('User Entity', () => {
-  it('deve instanciar um usuário corretamente', () => {
-    const user = new User({
-      id: '1',
-      name: 'Fabio',
-      email: 'fabio@teste.com',
-      password: '12345678',
-      isActive: true,
-      subjects: ['math'],
-    });
+  const validProps = {
+    id: 'user-uuid',
+    name: 'João Silva',
+    email: 'joao@dev.com',
+    password: 'hashed_password',
+    isActive: true,
+    createdAt: new Date(),
+  };
 
-    expect(user.name).toBe('Fabio');
+  it('should create a valid user instance', () => {
+    const user = new User(validProps);
+
+    expect(user.id).toBe(validProps.id);
+    expect(user.name).toBe(validProps.name);
+    expect(user.email).toBe(validProps.email);
     expect(user.isActive).toBe(true);
   });
 
-  it('deve desativar um usuário', () => {
-    const user = new User({
-      id: '1',
-      name: 'Fabio',
-      email: 'fabio@teste.com',
-      password: '12345678',
-      isActive: true,
-    });
+  it('should deactivate a user correctly', () => {
+    const user = new User(validProps);
 
+    expect(user.isActive).toBe(true);
     user.deactive();
     expect(user.isActive).toBe(false);
+  });
+
+  it('should throw error if name is empty', () => {
+    expect(() => {
+      new User({ ...validProps, name: '' });
+    }).toThrow();
   });
 });
