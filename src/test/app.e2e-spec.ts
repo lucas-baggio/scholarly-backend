@@ -15,15 +15,15 @@ describe('HealthController (e2e)', () => {
     await app.init();
   });
 
-  it('/health (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.status).toBe('ok');
-        expect(res.body).toHaveProperty('uptime');
-        expect(res.body).toHaveProperty('version');
-      });
+  it('/health (GET)', async () => {
+    const response: request.Response = await request(app.getHttpServer()).get(
+      '/health',
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('ok');
+    expect(response.body).toHaveProperty('uptime');
+    expect(response.body).toHaveProperty('version');
   });
 
   afterAll(async () => {
