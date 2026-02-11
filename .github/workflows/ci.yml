@@ -17,13 +17,10 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-
       - name: Install Dependencies
         run: npm ci
-
       - name: Check Linting
         run: npm run lint
-
       - name: Check Formatting
         run: npx prettier --check .
 
@@ -36,7 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Audit Dependencies
         run: npm audit --audit-level=high
 
@@ -51,12 +47,25 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-
       - name: Install Dependencies
         run: npm ci
-
       - name: Run Unit Tests
         run: npm run test
-
       - name: Check Coverage
         run: npm run test:cov
+
+  e2e-tests:
+    name: E2E Tests (Integration)
+    needs: [unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run E2E Tests
+        run: npm run test:e2e
