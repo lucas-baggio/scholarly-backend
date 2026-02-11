@@ -1,4 +1,4 @@
-import { Get, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { SchoolController } from './presentation/school.controller';
 import { CreateSchoolUseCase } from './application/use-cases/create-school.use-case';
 import { GetSchoolsByAdminUseCase } from './application/use-cases/get-school-by-admin-id.use-case';
