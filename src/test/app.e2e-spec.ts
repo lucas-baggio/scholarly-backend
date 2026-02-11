@@ -1,14 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { App } from 'supertest/types';
-import { beforeEach, describe, it } from 'node:test';
 import { AppModule } from '../app.module';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+describe('HealthController (e2e)', () => {
+  let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -17,11 +15,15 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', async () => {
-    return await request(app.getHttpServer())
-      .get('/')
+  it('/health (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        expect(res.body.status).toBe('ok');
+        expect(res.body).toHaveProperty('uptime');
+        expect(res.body).toHaveProperty('version');
+      });
   });
 
   afterAll(async () => {
