@@ -11,14 +11,22 @@ export class User {
   private props: UserProps;
 
   constructor(props: UserProps) {
-    if (!props.email.includes('@')) {
-      throw new Error('Invalid email format');
-    }
-
     this.props = {
       ...props,
       isActive: props.isActive ?? true,
     };
+
+    this.validate();
+  }
+
+  private validate() {
+    if (!this.props || !this.props.name || this.props.name.trim() === '') {
+      throw new Error('User name is required');
+    }
+
+    if (!this.props.email.includes('@')) {
+      throw new Error('Invalid email format');
+    }
   }
 
   get id() {
