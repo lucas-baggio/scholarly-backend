@@ -26,6 +26,6 @@ import { DeactivateUserUseCase } from './application/use-cases/deactivate-user.u
       useClass: BcryptHashService,
     },
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, HashService],
 })
 export class UserModules {}

@@ -25,7 +25,9 @@ export class CreateUserUseCase {
       email: dto.email,
       password: hashedPassword,
       isActive: true,
-      subjects: dto.subjects || [],
+      role: dto.role,
+      subjects: dto.subjects ?? [],
+      schoolIds: dto.schoolIds ?? [],
     });
 
     await this.userRepository.save(user);
