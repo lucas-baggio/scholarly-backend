@@ -1,5 +1,6 @@
 import { HashService } from '../../../../@shared/application/crypto/hash.service';
 import { CreateUserUseCase } from '../../../../modules/users/application/use-cases/create-user.use-case';
+import { UserRole } from '../../../../modules/users/domain/enums/user-role.enum';
 import { InMemoryUserRepository } from '../../../../modules/users/infrastructure/persistence/in-memory-user.repository';
 
 const mockHashService: jest.Mocked<HashService> = {
@@ -56,5 +57,21 @@ describe('CreateUserUseCase', () => {
 
     expect(result.password).toBe('hashed_password');
     expect(result.password).not.toBe(input.password);
+  });
+
+  it('Deve criar usuário com role e schoolIds quando informados', async () => {
+    const input = {
+      name: 'Admin Escola',
+      email: 'admin@escola.com',
+      password: 'password123',
+      role: UserRole.ADMIN,
+      schoolIds: ['school-1', 'school-2'],
+    };
+
+    const result = await sut.execute(input);
+
+    expect(result.role).toBe(UserRole.ADMIN);
+    expect(result.schoolIds).toEqual(['school-1', 'school-2']);
+    expect(result.isAdmin()).toBe(true);
   });
 });

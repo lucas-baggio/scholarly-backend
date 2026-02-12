@@ -6,8 +6,7 @@ export class InMemoryUserRepository implements UserRepository {
 
   save(user: User): Promise<void> {
     const index = this.users.findIndex((u) => u.id === user.id);
-
-    if (index > 0) {
+    if (index >= 0) {
       this.users[index] = user;
     } else {
       this.users.push(user);

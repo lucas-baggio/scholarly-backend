@@ -31,7 +31,9 @@ export class UserController {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       subjects: user.subjects,
+      schoolIds: user.schoolIds,
     }));
   }
 
@@ -44,8 +46,10 @@ export class UserController {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       isActive: user.isActive,
       subjects: user.subjects,
+      schoolIds: user.schoolIds,
     };
   }
 
@@ -57,8 +61,10 @@ export class UserController {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       isActive: user.isActive,
       subjects: user.subjects,
+      schoolIds: user.schoolIds,
     };
   }
 
