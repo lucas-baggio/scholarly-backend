@@ -101,4 +101,10 @@ export class User {
       this.props.schoolIds.push(schoolId);
     }
   }
+
+  public assignToSubject(subjectId: string): void {
+    if (!this.props.subjects.includes(subjectId)) {
+      this.props.subjects.push(subjectId);
+    }
+  }
 }

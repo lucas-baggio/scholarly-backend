@@ -57,6 +57,18 @@ describe('User Entity', () => {
     expect(user.schoolIds).toEqual(['school-1', 'school-2']);
   });
 
+  it('should assign user to subject with assignToSubject', () => {
+    const user = new User(validProps);
+
+    expect(user.subjects).toEqual([]);
+    user.assignToSubject('subject-1');
+    expect(user.subjects).toEqual(['subject-1']);
+    user.assignToSubject('subject-2');
+    expect(user.subjects).toEqual(['subject-1', 'subject-2']);
+    user.assignToSubject('subject-1');
+    expect(user.subjects).toEqual(['subject-1', 'subject-2']);
+  });
+
   it('should deactivate a user correctly', () => {
     const user = new User(validProps);
 
