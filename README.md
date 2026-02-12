@@ -89,17 +89,17 @@ O projeto utiliza injeção de dependências do NestJS para desacoplar component
 
 #### User (Professor / Admin)
 
-| Campo    | Tipo     | Restrições                     | Descrição                                  |
-| -------- | -------- | ------------------------------ | ------------------------------------------ |
-| id       | UUID     | Primary Key                    | Identificador único do usuário             |
-| name     | String   | Required                       | Nome do usuário                            |
-| email    | String   | Required, UNIQUE, Email Format | Email único para autenticação              |
-| password | String   | Required, Min: 6               | Senha criptografada com Bcrypt             |
-| role     | Enum     | ADMIN, TEACHER (default)      | Papel do usuário no sistema                |
-| isActive | Boolean  | Default: true                  | Status ativo/inativo                       |
-| subjects | String[] | Optional                       | Identificadores das disciplinas vinculadas |
-| schoolIds| String[] | Optional                       | Identificadores das escolas vinculadas     |
-| createdAt| Date     | Optional                       | Data de criação                            |
+| Campo     | Tipo     | Restrições                     | Descrição                                  |
+| --------- | -------- | ------------------------------ | ------------------------------------------ |
+| id        | UUID     | Primary Key                    | Identificador único do usuário             |
+| name      | String   | Required                       | Nome do usuário                            |
+| email     | String   | Required, UNIQUE, Email Format | Email único para autenticação              |
+| password  | String   | Required, Min: 6               | Senha criptografada com Bcrypt             |
+| role      | Enum     | ADMIN, TEACHER (default)       | Papel do usuário no sistema                |
+| isActive  | Boolean  | Default: true                  | Status ativo/inativo                       |
+| subjects  | String[] | Optional                       | Identificadores das disciplinas vinculadas |
+| schoolIds | String[] | Optional                       | Identificadores das escolas vinculadas     |
+| createdAt | Date     | Optional                       | Data de criação                            |
 
 #### Subject (Disciplina)
 
@@ -111,13 +111,13 @@ O projeto utiliza injeção de dependências do NestJS para desacoplar component
 
 #### Allocation (Alocação)
 
-| Campo     | Tipo | Restrições    | Descrição                          |
-| --------- | ---- | ------------- | ---------------------------------- |
-| id        | UUID | Primary Key   | Identificador único da alocação    |
-| teacherId | UUID | Foreign Key   | Referência para User               |
-| schoolId  | UUID | Foreign Key   | Referência para School             |
-| subjectId | UUID | Foreign Key   | Referência para Subject            |
-| createAt  | Date | Required      | Data de criação da alocação        |
+| Campo     | Tipo | Restrições  | Descrição                       |
+| --------- | ---- | ----------- | ------------------------------- |
+| id        | UUID | Primary Key | Identificador único da alocação |
+| teacherId | UUID | Foreign Key | Referência para User            |
+| schoolId  | UUID | Foreign Key | Referência para School          |
+| subjectId | UUID | Foreign Key | Referência para Subject         |
+| createAt  | Date | Required    | Data de criação da alocação     |
 
 #### School (Escola)
 
@@ -178,7 +178,7 @@ Módulo acadêmico: entidade School com operações de criação, listagem e bus
 | Supertest         | 7.0.0+  | HTTP assertions para testes E2E                        |
 | ESLint            | 9.18.0+ | Linting e enforcing de padrões de código               |
 | Prettier          | 3.4.2+  | Formatação automática de código                        |
-| @nestjs/jwt       | 11.x    | Geração e validação de tokens JWT                     |
+| @nestjs/jwt       | 11.x    | Geração e validação de tokens JWT                      |
 | @nestjs/passport  | 11.x    | Estratégias de autenticação (JWT)                      |
 | passport-jwt      | 4.x     | Estratégia Passport para JWT                           |
 
@@ -199,7 +199,7 @@ npm install
 
 | Variável   | Obrigatório | Descrição                                                                 |
 | ---------- | ----------- | ------------------------------------------------------------------------- |
-| PORT       | Não         | Porta do servidor (default: 3000)                                        |
+| PORT       | Não         | Porta do servidor (default: 3000)                                         |
 | JWT_SECRET | Produção    | Chave secreta para assinatura do JWT. Em desenvolvimento usa valor padrão |
 
 ### Compilação
@@ -227,35 +227,35 @@ Base URL: `http://localhost:3000` (ou a porta configurada em `PORT`).
 
 ### Autenticação
 
-| Método | Rota          | Descrição                    | Body / Headers                    |
-| ------ | ------------- | ---------------------------- | --------------------------------- |
-| POST   | /auth/login   | Login (retorna JWT e user)   | `{ "email", "password" }`         |
+| Método | Rota        | Descrição                  | Body / Headers            |
+| ------ | ----------- | -------------------------- | ------------------------- |
+| POST   | /auth/login | Login (retorna JWT e user) | `{ "email", "password" }` |
 
 Resposta de sucesso: `{ "accessToken": "<JWT>", "user": { "id", "name", "email", "role" } }`.
 
 ### Usuários
 
-| Método | Rota        | Descrição              | Body / Observação                    |
-| ------ | ----------- | ----------------------- | ------------------------------------ |
-| POST   | /users      | Criar usuário           | `{ "name", "email", "password", "role?", "subjects?", "schoolIds?" }` |
-| GET    | /users      | Listar usuários ativos  | Resposta: array com id, name, email, role, subjects, schoolIds       |
-| GET    | /users/:id  | Buscar usuário por ID   | Resposta: id, name, email, role, isActive, subjects, schoolIds        |
-| DELETE | /users/:id  | Desativar usuário       | 204 No Content                       |
+| Método | Rota       | Descrição              | Body / Observação                                                     |
+| ------ | ---------- | ---------------------- | --------------------------------------------------------------------- |
+| POST   | /users     | Criar usuário          | `{ "name", "email", "password", "role?", "subjects?", "schoolIds?" }` |
+| GET    | /users     | Listar usuários ativos | Resposta: array com id, name, email, role, subjects, schoolIds        |
+| GET    | /users/:id | Buscar usuário por ID  | Resposta: id, name, email, role, isActive, subjects, schoolIds        |
+| DELETE | /users/:id | Desativar usuário      | 204 No Content                                                        |
 
 ### Escolas (Academic)
 
-| Método | Rota                    | Descrição                 |
-| ------ | ----------------------- | -------------------------- |
-| POST   | /schools                | Criar escola              |
-| GET    | /schools                | Listar escolas ativas      |
-| GET    | /schools/:id            | Buscar escola por ID      |
-| GET    | /schools/admin/:adminId | Escolas por ID do admin   |
+| Método | Rota                    | Descrição               |
+| ------ | ----------------------- | ----------------------- |
+| POST   | /schools                | Criar escola            |
+| GET    | /schools                | Listar escolas ativas   |
+| GET    | /schools/:id            | Buscar escola por ID    |
+| GET    | /schools/admin/:adminId | Escolas por ID do admin |
 
 ### Health
 
-| Método | Rota     | Descrição        |
-| ------ | --------- | ----------------- |
-| GET    | /health   | Health check     |
+| Método | Rota    | Descrição    |
+| ------ | ------- | ------------ |
+| GET    | /health | Health check |
 
 Para rotas protegidas (quando aplicável), envie o header: `Authorization: Bearer <accessToken>`.
 
