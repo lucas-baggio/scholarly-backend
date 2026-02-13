@@ -47,11 +47,24 @@ export class SchoolController {
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return await this.getSchoolByIdUseCase.execute(id);
+    const school = await this.getSchoolByIdUseCase.execute(id);
+    if (!school) return school;
+    return {
+      id: school.id,
+      name: school.name,
+      adminId: school.adminId,
+      isActive: school.isActive,
+    };
   }
 
   @Get('admin/:adminId')
   async getByAdmin(@Param('adminId') adminId: string) {
-    return await this.getSchoolsByAdminUseCase.execute(adminId);
+    const schools = await this.getSchoolsByAdminUseCase.execute(adminId);
+    return schools.map((school) => ({
+      id: school.id,
+      name: school.name,
+      adminId: school.adminId,
+      isActive: school.isActive,
+    }));
   }
 }

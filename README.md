@@ -350,11 +350,20 @@ npm run test:debug
 
 ### Testes E2E
 
-Testes end-to-end validam fluxos completos de requisição HTTP:
+Testes end-to-end validam o fluxo completo (Presentation + Use Cases + Infrastructure), incluindo caminho feliz (Auth → Schools → Subjects → Allocations → TimeSlots → Schedules → school-grid) e caminho infeliz (ex.: agendar em slot ocupado → 409). O app de teste usa `ValidationPipe` e, quando `DATABASE_URL` está definida, limpa as tabelas antes da suíte para evitar conflito de unicidade.
 
 ```bash
+# Executar E2E
 npm run test:e2e
+
+# E2E com cobertura (Controllers e Mappers em presentation/ e infrastructure/persistence/)
+npm run test:cov:e2e
+
+# Cobertura unitária + E2E
+npm run test:cov:all
 ```
+
+Com `DATABASE_URL` configurada, os repositórios Prisma e os mappers (toDomain/toPersistence) são exercitados; sem ela, a suíte usa repositórios em memória.
 
 ## Padrões de Desenvolvimento
 

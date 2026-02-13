@@ -3,10 +3,13 @@
   "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
-  "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  },
-  "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/$1"
-  }
+  "transform": { "^.+\\.(t|j)s$": "ts-jest" },
+  "moduleNameMapper": { "^src/(.*)$": "<rootDir>/$1" },
+  "collectCoverageFrom": [
+    "modules/**/presentation/**/*.ts",
+    "modules/**/infrastructure/persistence/**/*.ts",
+    "prisma/**/*.ts"
+  ],
+  "coverageDirectory": "test/coverage-e2e",
+  "coverageReporters": ["text", "lcov", "html"]
 }
