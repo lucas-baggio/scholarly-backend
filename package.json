@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./src/test/jest-e2e.json",
     "test:cov:e2e": "jest --config ./src/test/jest-e2e.json --coverage --runInBand",
     "test:cov:all": "npm run test:cov && npm run test:cov:e2e",
+    "prisma:generate": "prisma generate",
     "db:seed": "prisma db seed",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"

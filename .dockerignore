@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+coverage-e2e
+src/test/coverage-e2e
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+*.md
+.vscode
+.idea
+*.log
+.DS_Store
