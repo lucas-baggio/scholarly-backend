@@ -32,6 +32,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    
+  nginx-proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'   
+      - '81:81'   
+      - '443:443' 
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
 
 volumes:
   pgdata:
