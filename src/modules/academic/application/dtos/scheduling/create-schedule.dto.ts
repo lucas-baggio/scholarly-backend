@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'Allocation ID is required' })
   allocationId!: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'TimeSlot ID is required' })
   timeSlotId!: string;
 }

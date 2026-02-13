@@ -1,4 +1,4 @@
-import { DomainException } from 'src/@shared/domain/exceptions/domain.exception';
+import { DomainException } from '../../../../@shared/domain/exceptions/domain.exception';
 
 export class UserInactiveException extends DomainException {
   constructor(userId: string) {

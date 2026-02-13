@@ -1,11 +1,11 @@
-import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateSchoolDto {
   @IsString()
   @IsNotEmpty()
   name!: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
   adminId!: string;
 }

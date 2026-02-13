@@ -2,9 +2,9 @@
 
 ## Introdução
 
-Scholarly é um sistema de backend desenvolvido para resolver o problema crítico de conflitos de horários em ambientes escolares. A plataforma permite que professores reservem slots de tempo vinculados às suas disciplinas em laboratórios e salas de aula, garantindo disponibilidade de recursos e eliminating conflitos de agendamento.
+Scholarly é um sistema de backend desenvolvido para resolver o problema crítico de conflitos de horários em ambientes escolares. A plataforma permite que professores reservem slots de tempo vinculados às suas disciplinas em laboratórios e salas de aula, garantindo disponibilidade de recursos e eliminando conflitos de agendamento.
 
-A solução propõe uma arquitetura escalável que separa claramente as camadas de domínio, aplicação, infraestrutura e apresentação, aderindo rigorosamente aos princípios de Clean Architecture e Domain-Driven Design. Isso garante manutenibilidade, testabilidade e flexibilidade para evolução futura do sistema.
+A solução propõe uma arquitetura escalável que separa claramente as camadas de domínio, aplicação, infraestrutura e apresentação, aderindo aos princípios de Clean Architecture e Domain-Driven Design. Isso garante manutenibilidade, testabilidade e flexibilidade para evolução futura do sistema.
 
 ## Arquitetura
 
@@ -14,15 +14,15 @@ O projeto segue a arquitetura em camadas de Clean Architecture, com separação 
 
 Contém as entidades de negócio, interfaces de repositórios e exceções de domínio. Esta camada é agnóstica a frameworks e tecnologias, representando as regras de negócio puras.
 
-- **Entidades**: Definem os agregados do domínio (User, Subject, ScheduleSlot)
+- **Entidades**: Definem os agregados do domínio (User, School, Subject, Allocation, TimeSlot, Schedule)
 - **Repositórios (Interfaces)**: Definem contratos para persistência sem implementação concreta
-- **Exceções de Domínio**: Erros específicos do negócio (UserInactiveException, UserNotAssignedToSubjectException)
+- **Exceções de Domínio**: Erros específicos do negócio (AdminRequiredException, SchoolInactiveException)
 
 ### Camada de Aplicação (Application)
 
 Implementa os Casos de Uso (Use Cases) que orquestram a lógica de negócio. Esta camada funciona como intermediária entre a apresentação e o domínio.
 
-- **Use Cases**: Encapsulam operações específicas (CreateUserUseCase, DeactivateUserUseCase, GetUserByIdUseCase, ListActiveUsersUseCase, AuthenticateUserUseCase, CreateSchoolUseCase, etc.)
+- **Use Cases**: Encapsulam operações específicas (CreateUserUseCase, AuthenticateUserUseCase, CreateSchoolUseCase, CreateSubjectUseCase, CreateAllocationUseCase, CreateTimeSlotUseCase, CreateScheduleUseCase, ListSchoolGridUseCase, etc.)
 - **Data Transfer Objects (DTOs)**: Definem o contrato de entrada/saída para serviços, implementando validação via class-validator
 - **Serviços de Aplicação**: Coordenam operações que envolvem múltiplas entidades
 
@@ -30,18 +30,19 @@ Implementa os Casos de Uso (Use Cases) que orquestram a lógica de negócio. Est
 
 Implementa os detalhes técnicos, incluindo persistência, criptografia e integrações externas. Utiliza padrão de Inversão de Controle através de Dependency Injection.
 
-- **Repositórios em Memória**: Implementação leve para desacoplamento de banco de dados, ideal para prototipagem e testes unitários
+- **Repositórios em Memória**: Implementação leve para desacoplamento, usada em testes unitários
+- **Repositórios Prisma (PostgreSQL)**: Persistência real com Prisma ORM; mappers convertem entidades de domínio ↔ modelos Prisma
 - **Hash Service (Bcrypt)**: Implementação concreta de criptografia de senhas
-- **Database Abstraction**: Permite troca futura de tecnologia de persistência sem impactar camadas superiores
+- **Database Abstraction**: Interfaces de repositório permitem troca entre in-memory e PostgreSQL via configuração
 
 ### Camada de Apresentação (Presentation)
 
 Expõe APIs REST através de Controllers NestJS. Responsável por receber requisições HTTP, invocar casos de uso e retornar respostas.
 
-- **Controllers**: Endpoints REST (UserController, AuthController, SchoolController, HealthController)
+- **Controllers**: Endpoints REST (UserController, AuthController, SchoolController, SubjectController, AllocationController, TimeSlotController, ScheduleController, HealthController)
 - **Validação de Entrada**: Através de pipes NestJS e class-validator
 - **Tratamento de Erros**: Mapeamento de exceções de domínio para respostas HTTP adequadas
-- **Autenticação**: JWT com Passport; guards e decorators para rotas protegidas
+- **Autenticação**: JWT com Passport; guards e decorator `@CurrentUser()` para rotas protegidas
 
 ### Inversão de Dependência
 
@@ -56,33 +57,23 @@ O projeto utiliza injeção de dependências do NestJS para desacoplar component
 ### Diagrama Entidade-Relacionamento
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│ ┌──────────────────┐         ┌──────────────────┐                   │
-│ │      User        │         │     Subject      │                   │
-│ ├──────────────────┤         ├──────────────────┤                   │
-│ │ id (PK)          │         │ id (PK)          │                   │
-│ │ name             │         │ name             │                   │
-│ │ email (UNIQUE)   │         │ isActive         │                   │
-│ │ password (hash)  │         └──────────────────┘                   │
-│ │ isActive         │                                                │
-│ └──────────────────┘                                                │
-│          │                                                          │
-│          │ 1:N (N:N through junction table)                         │
-│          │                                                          │
-│ ┌─────────────────────────────────────────────────────────────┐     │
-│ │            ScheduleSlot                                     │     │
-│ ├─────────────────────────────────────────────────────────────┤     │
-│ │ id (PK)                                                     │     │
-│ │ subjectId (FK)                                              │     │
-│ │ teacherId (FK -> User.id)                                   │     │
-│ │ date                                                        │     │
-│ │ startTime                                                   │     │
-│ │ endTime                                                     │     │
-│ │ status (AVAILABLE, RESERVED, CANCELLED)                     │     │
-│ └─────────────────────────────────────────────────────────────┘     │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  User (id, name, email UNIQUE, password, role ADMIN|TEACHER, isActive, ...)  │
+│       │                                                                      │
+│       │ 1:1 (admin)                                                          │
+│       ▼                                                                      │
+│  School (id, name, adminId UNIQUE, isActive, ...)  ◄── 1 ADM por escola     │
+│       │                                                                      │
+│       ├── 1:N Subject (id, name, schoolId, isActive, ...)                    │
+│       ├── 1:N TimeSlot (id, schoolId, name, dayOfWeek, startMinutes, ...)    │
+│       └── 1:N Allocation (teacherId, schoolId, subjectId)                    │
+│                    │                                                         │
+│  User (teacher) ───┘ (Professor em múltiplas escolas via Allocation)         │
+│                    │                                                         │
+│                    └── 1:N Schedule (allocationId, timeSlotId)               │
+│                              │                                               │
+│  TimeSlot ───────────────────┘ (grade horária: quem dá aula em qual slot)    │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Entidades Principais
@@ -101,39 +92,66 @@ O projeto utiliza injeção de dependências do NestJS para desacoplar component
 | schoolIds | String[] | Optional                       | Identificadores das escolas vinculadas     |
 | createdAt | Date     | Optional                       | Data de criação                            |
 
+#### School (Escola)
+
+| Campo     | Tipo     | Restrições          | Descrição                                |
+| --------- | -------- | ------------------- | ---------------------------------------- |
+| id        | UUID     | Primary Key         | Identificador único da escola            |
+| name      | String   | Required            | Nome da escola                           |
+| adminId   | UUID     | Foreign Key, UNIQUE | Um ADM por escola (referência para User) |
+| isActive  | Boolean  | Default: true       | Escola ativa/inativa                     |
+| createdAt | DateTime | Required            | Data de criação                          |
+
 #### Subject (Disciplina)
 
-| Campo    | Tipo    | Restrições       | Descrição                         |
-| -------- | ------- | ---------------- | --------------------------------- |
-| id       | UUID    | Primary Key      | Identificador único da disciplina |
-| name     | String  | Required, Min: 3 | Nome da disciplina                |
-| isActive | Boolean | Default: true    | Disponibilidade da disciplina     |
+| Campo     | Tipo     | Restrições    | Descrição                           |
+| --------- | -------- | ------------- | ----------------------------------- |
+| id        | UUID     | Primary Key   | Identificador único da disciplina   |
+| name      | String   | Required      | Nome da disciplina                  |
+| schoolId  | UUID     | Foreign Key   | Escola à qual a disciplina pertence |
+| isActive  | Boolean  | Default: true | Disponibilidade da disciplina       |
+| createdAt | DateTime | Required      | Data de criação                     |
 
 #### Allocation (Alocação)
 
-| Campo     | Tipo | Restrições  | Descrição                       |
-| --------- | ---- | ----------- | ------------------------------- |
-| id        | UUID | Primary Key | Identificador único da alocação |
-| teacherId | UUID | Foreign Key | Referência para User            |
-| schoolId  | UUID | Foreign Key | Referência para School          |
-| subjectId | UUID | Foreign Key | Referência para Subject         |
-| createAt  | Date | Required    | Data de criação da alocação     |
+Vínculo Professor × Escola × Matéria. Um professor pode estar alocado em várias escolas e disciplinas.
 
-#### School (Escola)
+| Campo     | Tipo     | Restrições  | Descrição                                 |
+| --------- | -------- | ----------- | ----------------------------------------- |
+| id        | UUID     | Primary Key | Identificador único da alocação           |
+| teacherId | UUID     | Foreign Key | Referência para User (professor)          |
+| schoolId  | UUID     | Foreign Key | Referência para School                    |
+| subjectId | UUID     | Foreign Key | Referência para Subject (da mesma escola) |
+| createdAt | DateTime | Required    | Data de criação da alocação               |
 
-Módulo acadêmico: entidade School com operações de criação, listagem e busca por ID ou por admin.
+Constraint: `@@unique([teacherId, schoolId, subjectId])` — evita alocação duplicada.
 
-#### ScheduleSlot (Slot de Agendamento)
+#### TimeSlot (Slot de Horário)
 
-| Campo     | Tipo | Restrições                     | Descrição                     |
-| --------- | ---- | ------------------------------ | ----------------------------- |
-| id        | UUID | Primary Key                    | Identificador único do slot   |
-| subjectId | UUID | Foreign Key                    | Referência para Subject       |
-| teacherId | UUID | Foreign Key                    | Referência para User          |
-| date      | Date | Required                       | Data do agendamento           |
-| startTime | Time | Required                       | Horário inicial (formato 24h) |
-| endTime   | Time | Required                       | Horário final (formato 24h)   |
-| status    | Enum | AVAILABLE, RESERVED, CANCELLED | Status do slot                |
+Define um intervalo de tempo dentro de uma escola (ex.: “1ª aula 07:00–07:50”). Horários armazenados em minutos desde meia-noite para comparação segura.
+
+| Campo            | Tipo   | Restrições  | Descrição                                |
+| ---------------- | ------ | ----------- | ---------------------------------------- |
+| id               | UUID   | Primary Key | Identificador único do slot              |
+| schoolId         | UUID   | Foreign Key | Escola do slot                           |
+| name             | String | Required    | Nome do slot (ex.: “1ª aula”)            |
+| dayOfWeek        | Int    | 1–7         | Dia da semana (1 = segunda, 7 = domingo) |
+| startTimeMinutes | Int    | Required    | Início em minutos desde meia-noite       |
+| endTimeMinutes   | Int    | Required    | Fim em minutos (end > start)             |
+
+Apenas o admin da escola pode criar TimeSlots.
+
+#### Schedule (Agendamento)
+
+Atribui uma alocação (professor + escola + matéria) a um TimeSlot, formando a grade horária.
+
+| Campo        | Tipo | Restrições  | Descrição                           |
+| ------------ | ---- | ----------- | ----------------------------------- |
+| id           | UUID | Primary Key | Identificador único                 |
+| allocationId | UUID | Foreign Key | Alocação (professor/escola/matéria) |
+| timeSlotId   | UUID | Foreign Key | Slot de horário                     |
+
+Constraint: `@@unique([allocationId, timeSlotId])`. Regras de negócio: mesma escola; slot livre na escola; sem conflito de horário do professor no mesmo dia.
 
 ## Regras de Negócio
 
@@ -155,22 +173,26 @@ Módulo acadêmico: entidade School com operações de criação, listagem e bus
 
 7. **Papéis (Role)**: Usuários podem ser `ADMIN` ou `TEACHER`. Vinculação a escolas via `schoolIds` e método `assignToSchool`.
 
-### Lógica de Agendamento
+### Lógica Acadêmica e Agendamento
 
-8. **Prevenção de Conflitos Horários**: Um slot de laboratório/sala não pode possuir mais de uma reserva no mesmo intervalo de tempo. O sistema valida sobreposição temporal.
+8. **Um ADM por escola**: Cada escola possui um único administrador (`School.adminId` único). A criação de escola exige um User com role ADMIN.
 
-9. **Vinculação de Disciplina**: Professores podem reservar slots apenas para disciplinas às quais estão vinculados. Tentativas de reserva para disciplinas não atribuídas resultam em UserNotAssignedToSubjectException.
+9. **Disciplinas por escola**: Subject pertence a uma School; apenas escolas ativas podem ter disciplinas. Criação de Subject valida escola existente e ativa (SchoolInactiveException se inativa).
 
-10. **Limite de Atividade**: Professores inativos (isActive = false) não podem realizar novas reservas. Tentativas resultam em UserInactiveException.
+10. **Alocação Professor × Escola × Matéria**: Allocation vincula teacherId, schoolId e subjectId. Validações: professor existe, escola ativa, disciplina pertence à escola, sem duplicata (mesmo teacher/school/subject). Ao criar alocação, o User é atualizado com `assignToSchool` e `assignToSubject`.
 
-11. **Integridade Referencial**: Ao desativar um professor, todos os seus slots de agendamento associados devem ser cancelados ou realocados conforme política da instituição.
+11. **TimeSlot**: Apenas o admin da escola pode criar slots de horário. Horários em minutos (HH:mm convertido) para comparação segura; dayOfWeek 1–7; startTime < endTime.
+
+12. **Schedule (grade horária)**: Vincula uma Allocation a um TimeSlot. Regras: TimeSlot e Allocation da mesma escola; slot não pode estar ocupado por outra alocação; mesmo professor não pode ter dois agendamentos no mesmo dia/horário (conflito global). A grade da escola é consultada via `GET /school-grid/:schoolId`.
 
 ## Tecnologias
 
 | Tecnologia        | Versão  | Propósito                                              |
 | ----------------- | ------- | ------------------------------------------------------ |
 | NestJS            | 11.0.1+ | Framework backend Node.js com injeção de dependência   |
-| TypeScript        | Latest  | Linguagem tipada para maior segurança e documentação   |
+| TypeScript        | 5.7+    | Linguagem tipada para maior segurança e documentação   |
+| PostgreSQL        | 16      | Banco de dados relacional (Docker)                     |
+| Prisma ORM        | 7.x     | Camada de persistência, migrations e Prisma Client     |
 | Bcrypt            | 6.0.0+  | Algoritmo de hashing criptográfico para senhas         |
 | class-validator   | 0.14.3+ | Validação declarativa de DTOs e entidades              |
 | class-transformer | 0.5.1+  | Transformação de payloads JSON para classes TypeScript |
@@ -178,6 +200,7 @@ Módulo acadêmico: entidade School com operações de criação, listagem e bus
 | Supertest         | 7.0.0+  | HTTP assertions para testes E2E                        |
 | ESLint            | 9.18.0+ | Linting e enforcing de padrões de código               |
 | Prettier          | 3.4.2+  | Formatação automática de código                        |
+| dotenv            | 17.x    | Variáveis de ambiente (.env)                           |
 | @nestjs/jwt       | 11.x    | Geração e validação de tokens JWT                      |
 | @nestjs/passport  | 11.x    | Estratégias de autenticação (JWT)                      |
 | passport-jwt      | 4.x     | Estratégia Passport para JWT                           |
@@ -188,6 +211,7 @@ Módulo acadêmico: entidade School com operações de criação, listagem e bus
 
 - Node.js 18.x ou superior
 - npm 9.x ou superior
+- Docker e Docker Compose (para PostgreSQL e Adminer)
 
 ### Setup do Projeto
 
@@ -195,12 +219,37 @@ Módulo acadêmico: entidade School com operações de criação, listagem e bus
 npm install
 ```
 
+### Banco de Dados (PostgreSQL + Prisma)
+
+O projeto usa PostgreSQL via Docker e Prisma ORM. Opcionalmente, use Adminer para interface visual.
+
+```bash
+# Subir PostgreSQL e Adminer (porta 5432 e 8080)
+docker-compose up -d
+
+# Copiar variáveis de ambiente (ajuste DATABASE_URL se necessário)
+cp .env.example .env
+
+# Aplicar migrations e criar tabelas
+npm run db:migrate
+
+# Popular dados iniciais (admin + escola de teste)
+npm run db:seed
+```
+
+Scripts úteis: `npm run db:studio` (Prisma Studio), `npm run db:seed` (re-executar seed).
+
 ### Variáveis de Ambiente
 
-| Variável   | Obrigatório | Descrição                                                                 |
-| ---------- | ----------- | ------------------------------------------------------------------------- |
-| PORT       | Não         | Porta do servidor (default: 3000)                                         |
-| JWT_SECRET | Produção    | Chave secreta para assinatura do JWT. Em desenvolvimento usa valor padrão |
+Copie `.env.example` para `.env` e ajuste se necessário:
+
+| Variável     | Obrigatório | Descrição                                                                                                                                   |
+| ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| DATABASE_URL | Sim\*       | URL de conexão PostgreSQL (ex.: `postgresql://app:secret@localhost:5432/laboratorio`). \*Obrigatório para migrate/seed e para usar o banco. |
+| PORT         | Não         | Porta do servidor (default: 3000)                                                                                                           |
+| JWT_SECRET   | Produção    | Chave secreta para assinatura do JWT. Em desenvolvimento usa valor padrão                                                                   |
+
+**Sem `DATABASE_URL`:** a aplicação sobe usando repositórios em memória (não precisa de Docker/PostgreSQL). O health retorna `database: "disconnected"`.
 
 ### Compilação
 
@@ -251,11 +300,33 @@ Resposta de sucesso: `{ "accessToken": "<JWT>", "user": { "id", "name", "email",
 | GET    | /schools/:id            | Buscar escola por ID    |
 | GET    | /schools/admin/:adminId | Escolas por ID do admin |
 
+### Disciplinas (Subjects)
+
+| Método | Rota                       | Descrição                               |
+| ------ | -------------------------- | --------------------------------------- |
+| POST   | /subjects                  | Criar disciplina (body: name, schoolId) |
+| GET    | /subjects/school/:schoolId | Listar disciplinas por escola           |
+
+### Alocações (Allocations)
+
+| Método | Rota                            | Descrição                                       |
+| ------ | ------------------------------- | ----------------------------------------------- |
+| POST   | /allocations                    | Criar alocação (teacherId, schoolId, subjectId) |
+| GET    | /allocations/teacher/:teacherId | Listar alocações do professor                   |
+
+### Slots de Horário e Grade (Scheduling)
+
+| Método | Rota                   | Descrição                                                                                            |
+| ------ | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| POST   | /time-slots            | Criar slot de horário (schoolId, name, dayOfWeek, startTime, endTime HH:mm). Apenas admin da escola. |
+| POST   | /schedules             | Criar agendamento (allocationId, timeSlotId)                                                         |
+| GET    | /school-grid/:schoolId | Grade horária da escola                                                                              |
+
 ### Health
 
-| Método | Rota    | Descrição    |
-| ------ | ------- | ------------ |
-| GET    | /health | Health check |
+| Método | Rota    | Descrição                                                                   |
+| ------ | ------- | --------------------------------------------------------------------------- |
+| GET    | /health | Health check (inclui verificação de conexão com o banco quando configurado) |
 
 Para rotas protegidas (quando aplicável), envie o header: `Authorization: Bearer <accessToken>`.
 
@@ -318,7 +389,7 @@ export class CreateUserDto {
 }
 ```
 
-### Manipulaçãode Erros
+### Manipulação de Erros
 
 Defina exceções de domínio em `domain/exceptions/` e mapeie para respostas HTTP no controller:
 
@@ -335,8 +406,9 @@ try {
 
 ## Roadmap
 
-- Integração com banco de dados PostgreSQL
+- Persistência PostgreSQL com Prisma (schema, migrations, seed, mappers e repositórios reais)
 - Aplicar JwtAuthGuard em rotas que exigem autenticação
+- Health check com verificação de conexão ao banco
 - WebSocket para notificações em tempo real de disponibilidade
 - Relatórios e analytics de utilização de recursos
 - Sincronização com calendários institucionais (Google Calendar, Outlook)
