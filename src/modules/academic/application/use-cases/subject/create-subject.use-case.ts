@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SchoolRepository } from '../../domain/school.repository';
-import { SubjectRepository } from '../../domain/subject.repository';
-import { Subject } from '../../domain/subject.entity';
-import { CreateSubjectDto } from '../dtos/create-subject.dto';
-import { SchoolNotFoundException } from '../../domain/exceptions/school-not-found.exception';
-import { SchoolInactiveException } from '../../domain/exceptions/school-inactive.exception';
+import { SchoolRepository } from '../../../domain/school/school.repository';
+import { SubjectRepository } from '../../../domain/subject/subject.repository';
+import { Subject } from '../../../domain/subject/subject.entity';
+import { CreateSubjectDto } from '../../dtos/subject/create-subject.dto';
+import { SchoolNotFoundException } from '../../../domain/school/exceptions/school-not-found.exception';
+import { SchoolInactiveException } from '../../../domain/school/exceptions/school-inactive.exception';
 
 @Injectable()
 export class CreateSubjectUseCase {

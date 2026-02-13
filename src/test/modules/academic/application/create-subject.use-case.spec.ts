@@ -1,10 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
-import { CreateSubjectUseCase } from '../../../../modules/academic/application/use-cases/create-subject.use-case';
-import { SchoolInactiveException } from '../../../../modules/academic/domain/exceptions/school-inactive.exception';
-import { School } from '../../../../modules/academic/domain/school.entity';
-import { Subject } from '../../../../modules/academic/domain/subject.entity';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
-import { InMemorySubjectRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-subject.repository';
+import { CreateSubjectUseCase } from '../../../../modules/academic/application/use-cases/subject/create-subject.use-case';
+import { SchoolInactiveException } from '../../../../modules/academic/domain/school/exceptions/school-inactive.exception';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
+import { Subject } from '../../../../modules/academic/domain/subject/subject.entity';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
+import { InMemorySubjectRepository } from '../../../../modules/academic/infrastructure/persistence/subject/in-memory-subject.repository';
 
 describe('CreateSubjectUseCase', () => {
   let sut: CreateSubjectUseCase;

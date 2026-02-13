@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AllocationRepository } from '../../domain/allocation.repository';
-import { SchoolRepository } from '../../domain/school.repository';
-import { SubjectRepository } from '../../domain/subject.repository';
-import { UserRepository } from '../../../users/domain/user.repository';
-import { Allocation } from '../../domain/allocation.entity';
-import { CreateAllocationDto } from '../dtos/create-allocation.dto';
-import { SchoolInactiveException } from '../../domain/exceptions/school-inactive.exception';
+import { AllocationRepository } from '../../../domain/allocation/allocation.repository';
+import { SchoolRepository } from '../../../domain/school/school.repository';
+import { SubjectRepository } from '../../../domain/subject/subject.repository';
+import { UserRepository } from '../../../../users/domain/user.repository';
+import { Allocation } from '../../../domain/allocation/allocation.entity';
+import { CreateAllocationDto } from '../../dtos/allocation/create-allocation.dto';
+import { SchoolInactiveException } from '../../../domain/school/exceptions/school-inactive.exception';
 
 @Injectable()
 export class CreateAllocationUseCase {

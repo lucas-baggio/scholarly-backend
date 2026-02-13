@@ -1,6 +1,6 @@
-import { GetSchoolsByAdminUseCase } from '../../../../modules/academic/application/use-cases/get-school-by-admin-id.use-case';
-import { School } from '../../../../modules/academic/domain/school.entity';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
+import { GetSchoolsByAdminUseCase } from '../../../../modules/academic/application/use-cases/school/get-school-by-admin-id.use-case';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
 
 describe('GetSchoolsByAdminUseCase', () => {
   let sut: GetSchoolsByAdminUseCase;

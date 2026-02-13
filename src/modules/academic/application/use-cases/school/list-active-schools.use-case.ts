@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { SchoolRepository } from '../../domain/school.repository';
-import { School } from '../../domain/school.entity';
+import { SchoolRepository } from '../../../domain/school/school.repository';
+import { School } from '../../../domain/school/school.entity';
 
 @Injectable()
 export class ListActiveSchoolsUseCase {

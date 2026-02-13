@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AllocationRepository } from '../../domain/allocation.repository';
-import { Allocation } from '../../domain/allocation.entity';
+import { AllocationRepository } from '../../../domain/allocation/allocation.repository';
+import { Allocation } from '../../../domain/allocation/allocation.entity';
 
 @Injectable()
 export class ListAllocationsByTeacherUseCase {

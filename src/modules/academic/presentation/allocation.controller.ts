@@ -7,10 +7,10 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { CreateAllocationUseCase } from '../application/use-cases/create-allocation.use-case';
-import { ListAllocationsByTeacherUseCase } from '../application/use-cases/list-allocations-by-teacher.use-case';
-import { CreateAllocationDto } from '../application/dtos/create-allocation.dto';
-import { Allocation } from '../domain/allocation.entity';
+import { CreateAllocationUseCase } from '../application/use-cases/allocation/create-allocation.use-case';
+import { ListAllocationsByTeacherUseCase } from '../application/use-cases/allocation/list-allocations-by-teacher.use-case';
+import { CreateAllocationDto } from '../application/dtos/allocation/create-allocation.dto';
+import { Allocation } from '../domain/allocation/allocation.entity';
 
 function toAllocationResponse(allocation: Allocation) {
   return {

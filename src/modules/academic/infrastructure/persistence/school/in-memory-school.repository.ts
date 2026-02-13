@@ -1,5 +1,5 @@
-import { School } from '../../domain/school.entity';
-import { SchoolRepository } from '../../domain/school.repository';
+import { School } from '../../../domain/school/school.entity';
+import { SchoolRepository } from '../../../domain/school/school.repository';
 
 export class InMemorySchoolRepository implements SchoolRepository {
   public schools: School[] = [];

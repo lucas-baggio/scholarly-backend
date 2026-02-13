@@ -1,5 +1,5 @@
-import { Allocation } from '../../domain/allocation.entity';
-import { AllocationRepository } from '../../domain/allocation.repository';
+import { Allocation } from '../../../domain/allocation/allocation.entity';
+import { AllocationRepository } from '../../../domain/allocation/allocation.repository';
 
 export class InMemoryAllocationRepository implements AllocationRepository {
   public allocations: Allocation[] = [];

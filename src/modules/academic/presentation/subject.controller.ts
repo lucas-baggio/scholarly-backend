@@ -7,10 +7,10 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { CreateSubjectUseCase } from '../application/use-cases/create-subject.use-case';
-import { ListSubjectsBySchoolUseCase } from '../application/use-cases/list-subjects-by-school.use-case';
-import { CreateSubjectDto } from '../application/dtos/create-subject.dto';
-import { Subject } from '../domain/subject.entity';
+import { CreateSubjectUseCase } from '../application/use-cases/subject/create-subject.use-case';
+import { ListSubjectsBySchoolUseCase } from '../application/use-cases/subject/list-subjects-by-school.use-case';
+import { CreateSubjectDto } from '../application/dtos/subject/create-subject.dto';
+import { Subject } from '../domain/subject/subject.entity';
 
 function toSubjectResponse(subject: Subject) {
   return {

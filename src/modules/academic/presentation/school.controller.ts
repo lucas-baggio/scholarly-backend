@@ -7,11 +7,11 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { CreateSchoolUseCase } from '../application/use-cases/create-school.use-case';
-import { GetSchoolByIdUseCase } from '../application/use-cases/get-school-by-id.use-case';
-import { ListActiveSchoolsUseCase } from '../application/use-cases/list-active-schools.use-case';
-import { GetSchoolsByAdminUseCase } from '../application/use-cases/get-school-by-admin-id.use-case';
-import { CreateSchoolDto } from '../application/dtos/create-school.dto';
+import { CreateSchoolUseCase } from '../application/use-cases/school/create-school.use-case';
+import { GetSchoolByIdUseCase } from '../application/use-cases/school/get-school-by-id.use-case';
+import { ListActiveSchoolsUseCase } from '../application/use-cases/school/list-active-schools.use-case';
+import { GetSchoolsByAdminUseCase } from '../application/use-cases/school/get-school-by-admin-id.use-case';
+import { CreateSchoolDto } from '../application/dtos/school/create-school.dto';
 
 @Controller('schools')
 export class SchoolController {
