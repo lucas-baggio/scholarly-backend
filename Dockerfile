@@ -5,19 +5,23 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copiar arquivos de dependências
+# 1. Copiar apenas os arquivos de definição de dependências
 COPY package.json package-lock.json* ./
 
-# Instalar todas as dependências (incluindo devDependencies para o build)
+# 2. COPIAR A PASTA PRISMA ANTES DO INSTALL (Crucial para o postinstall)
+COPY prisma ./prisma/
+
+# 3. Instalar dependências (npm ci agora encontrará o schema.prisma)
 RUN npm ci
 
-# Copiar código fonte e schema Prisma
+# 4. Copiar o restante do código fonte
 COPY . .
 
-# Gerar Prisma Client e compilar o projeto
+# 5. Build do projeto (O prisma generate já rodou no postinstall, 
+# mas rodar aqui novamente garante que os binários estejam certos para o Alpine)
 RUN npx prisma generate && npm run build
 
-# Instalar apenas dependências de produção para o estágio final
+# Limpar devDependencies para reduzir a imagem final
 RUN npm prune --production
 
 # ============================================
@@ -25,25 +29,27 @@ RUN npm prune --production
 # ============================================
 FROM node:20-alpine AS runner
 
-# OpenSSL é necessário para o Prisma no Alpine
+# OpenSSL é necessário para o Prisma Client no Alpine
 RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# Copiar dependências de produção do builder
+# Definir para produção
+ENV NODE_ENV=production
+
+# Copiar dependências de produção
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/package-lock.json* ./
 
-# Copiar artefatos de build
+# Copiar artefatos de build e schema para migrations
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
-# Usuário não-root (segurança)
+# Segurança: Usuário não-root
 RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001 -G nodejs
 USER nestjs
 
 EXPOSE 3000
 
-# Migrações + subir a API
+# Executa migrações de produção e sobe a API
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
