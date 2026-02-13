@@ -1,5 +1,5 @@
-import { Subject } from '../../domain/subject.entity';
-import { SubjectRepository } from '../../domain/subject.repository';
+import { Subject } from '../../../domain/subject/subject.entity';
+import { SubjectRepository } from '../../../domain/subject/subject.repository';
 
 export class InMemorySubjectRepository implements SubjectRepository {
   public subjects: Subject[] = [];
