@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { SchoolRepository } from '../../domain/school.repository';
-import { UserRepository } from '../../../users/domain/user.repository';
-import { School } from '../../domain/school.entity';
-import { CreateSchoolDto } from '../dtos/create-school.dto';
+import { SchoolRepository } from '../../../domain/school/school.repository';
+import { UserRepository } from '../../../../users/domain/user.repository';
+import { School } from '../../../domain/school/school.entity';
+import { CreateSchoolDto } from '../../dtos/school/create-school.dto';
 
 @Injectable()
 export class CreateSchoolUseCase {
