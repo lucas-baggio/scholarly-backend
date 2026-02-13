@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
-import { GetSchoolByIdUseCase } from '../../../../modules/academic/application/use-cases/get-school-by-id.use-case';
-import { School } from '../../../../modules/academic/domain/school.entity';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
+import { GetSchoolByIdUseCase } from '../../../../modules/academic/application/use-cases/school/get-school-by-id.use-case';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
 
 describe('GetSchoolByIdUseCase', () => {
   let sut: GetSchoolByIdUseCase;

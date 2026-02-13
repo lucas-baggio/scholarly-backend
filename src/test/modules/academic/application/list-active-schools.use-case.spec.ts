@@ -1,6 +1,6 @@
-import { ListActiveSchoolsUseCase } from '../../../../modules/academic/application/use-cases/list-active-schools.use-case';
-import { School } from '../../../../modules/academic/domain/school.entity';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
+import { ListActiveSchoolsUseCase } from '../../../../modules/academic/application/use-cases/school/list-active-schools.use-case';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
 
 describe('ListActiveSchoolsUseCase', () => {
   let sut: ListActiveSchoolsUseCase;

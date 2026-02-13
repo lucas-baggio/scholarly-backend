@@ -1,4 +1,4 @@
-import { Subject } from '../../../../modules/academic/domain/subject.entity';
+import { Subject } from '../../../../modules/academic/domain/subject/subject.entity';
 
 describe('Subject Entity', () => {
   const validProps = {

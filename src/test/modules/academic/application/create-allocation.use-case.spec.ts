@@ -1,11 +1,11 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { CreateAllocationUseCase } from '../../../../modules/academic/application/use-cases/create-allocation.use-case';
-import { SchoolInactiveException } from '../../../../modules/academic/domain/exceptions/school-inactive.exception';
-import { School } from '../../../../modules/academic/domain/school.entity';
-import { Subject } from '../../../../modules/academic/domain/subject.entity';
-import { InMemoryAllocationRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-allocation.repository';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
-import { InMemorySubjectRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-subject.repository';
+import { CreateAllocationUseCase } from '../../../../modules/academic/application/use-cases/allocation/create-allocation.use-case';
+import { SchoolInactiveException } from '../../../../modules/academic/domain/school/exceptions/school-inactive.exception';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
+import { Subject } from '../../../../modules/academic/domain/subject/subject.entity';
+import { InMemoryAllocationRepository } from '../../../../modules/academic/infrastructure/persistence/allocation/in-memory-allocation.repository';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
+import { InMemorySubjectRepository } from '../../../../modules/academic/infrastructure/persistence/subject/in-memory-subject.repository';
 import { User } from '../../../../modules/users/domain/user.entity';
 import { UserRole } from '../../../../modules/users/domain/enums/user-role.enum';
 import { InMemoryUserRepository } from '../../../../modules/users/infrastructure/persistence/in-memory-user.repository';

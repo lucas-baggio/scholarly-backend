@@ -1,5 +1,5 @@
-import { AdminRequiredException } from '../../../../modules/academic/domain/exceptions/admin-required.exception';
-import { School } from '../../../../modules/academic/domain/school.entity';
+import { AdminRequiredException } from '../../../../modules/academic/domain/school/exceptions/admin-required.exception';
+import { School } from '../../../../modules/academic/domain/school/school.entity';
 
 describe('School Entity', () => {
   const validProps = {

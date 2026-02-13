@@ -1,6 +1,6 @@
 import { NotFoundException, ConflictException } from '@nestjs/common';
-import { CreateSchoolUseCase } from '../../../../modules/academic/application/use-cases/create-school.use-case';
-import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/in-memory-school.repository';
+import { CreateSchoolUseCase } from '../../../../modules/academic/application/use-cases/school/create-school.use-case';
+import { InMemorySchoolRepository } from '../../../../modules/academic/infrastructure/persistence/school/in-memory-school.repository';
 import { InMemoryUserRepository } from '../../../../modules/users/infrastructure/persistence/in-memory-user.repository';
 import { User } from '../../../../modules/users/domain/user.entity';
 
