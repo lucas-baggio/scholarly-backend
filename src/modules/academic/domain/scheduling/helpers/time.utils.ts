@@ -16,6 +16,21 @@ export function timeToMinutes(timeStr: string): number {
 }
 
 /**
+ * Converte minutos desde meia-noite em string HH:mm.
+ * Ex: 420 => '07:00', 470 => '07:50'
+ */
+export function minutesToTime(totalMinutes: number): string {
+  if (totalMinutes < 0 || totalMinutes >= 24 * 60) {
+    throw new Error(
+      `Invalid totalMinutes: ${totalMinutes}. Must be in [0, 1439]`,
+    );
+  }
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+/**
  * Verifica se dois intervalos [start1, end1) e [start2, end2) se sobrepõem.
  * start/end são strings HH:mm (convertidas para minutos internamente).
  * Intervalo é fechado no início e aberto no fim (end não inclui o minuto final).

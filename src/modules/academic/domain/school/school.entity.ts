@@ -39,6 +39,10 @@ export class School {
     return this.props.isActive;
   }
 
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
   deactivate(): void {
     this.props.isActive = false;
   }

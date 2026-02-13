@@ -32,4 +32,19 @@ export default tseslint.config(
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
+  // Camada de persistência Prisma: mapeamento intencional entre tipos Prisma e domínio
+  {
+    files: [
+      'src/prisma/**/*.ts',
+      'src/modules/**/infrastructure/persistence/**/*.ts',
+    ],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+    },
+  },
 );

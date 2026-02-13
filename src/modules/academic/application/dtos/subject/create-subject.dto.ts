@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateSubjectDto {
   @IsString()
   @IsNotEmpty({ message: 'Subject name is required' })
   name!: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'School ID is required' })
   schoolId!: string;
 }

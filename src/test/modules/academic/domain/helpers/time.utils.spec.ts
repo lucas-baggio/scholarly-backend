@@ -1,5 +1,6 @@
 import {
   timeToMinutes,
+  minutesToTime,
   timeRangesOverlap,
 } from '../../../../../modules/academic/domain/scheduling/helpers/time.utils';
 
@@ -21,6 +22,21 @@ describe('time.utils', () => {
       expect(() => timeToMinutes('25:00')).toThrow('Invalid time format');
       expect(() => timeToMinutes('07:60')).toThrow('Invalid time format');
       expect(() => timeToMinutes('invalid')).toThrow('Invalid time format');
+    });
+  });
+
+  describe('minutesToTime', () => {
+    it('should convert minutes since midnight to HH:mm', () => {
+      expect(minutesToTime(0)).toBe('00:00');
+      expect(minutesToTime(420)).toBe('07:00');
+      expect(minutesToTime(470)).toBe('07:50');
+      expect(minutesToTime(750)).toBe('12:30');
+      expect(minutesToTime(1439)).toBe('23:59');
+    });
+
+    it('should throw when out of range', () => {
+      expect(() => minutesToTime(-1)).toThrow('Invalid totalMinutes');
+      expect(() => minutesToTime(24 * 60)).toThrow('Invalid totalMinutes');
     });
   });
 

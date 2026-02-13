@@ -1,0 +1,129 @@
+// Prisma Schema - Laboratório Backend
+// PostgreSQL com enums nativos; datas em DateTime; horários em minutos (Int) para comparação segura.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// -------------------------------------------
+// Enums (PostgreSQL native enum)
+// -------------------------------------------
+
+enum UserRole {
+  ADMIN
+  TEACHER
+}
+
+// -------------------------------------------
+// User
+// -------------------------------------------
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(TEACHER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações: 1 ADM por escola (School.adminId unique)
+  schoolsAsAdmin School[]
+
+  // Professor em múltiplas escolas (via Allocation)
+  allocationsAsTeacher Allocation[]
+}
+
+// -------------------------------------------
+// School (1 ADM por escola: adminId único)
+// -------------------------------------------
+
+model School {
+  id        String   @id @default(cuid())
+  name      String
+  adminId   String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  admin   User     @relation(fields: [adminId], references: [id], onDelete: Restrict)
+  subjects   Subject[]
+  allocations Allocation[]
+  timeSlots   TimeSlot[]
+}
+
+// -------------------------------------------
+// Subject
+// -------------------------------------------
+
+model Subject {
+  id        String   @id @default(cuid())
+  name      String
+  schoolId  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  allocations Allocation[]
+}
+
+// -------------------------------------------
+// Allocation (Professor x Escola x Matéria)
+// -------------------------------------------
+
+model Allocation {
+  id         String   @id @default(cuid())
+  teacherId  String
+  schoolId   String
+  subjectId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  teacher User    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  school  School  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  schedules Schedule[]
+
+  @@unique([teacherId, schoolId, subjectId])
+}
+
+// -------------------------------------------
+// TimeSlot (horários em minutos para comparação segura)
+// -------------------------------------------
+
+model TimeSlot {
+  id               String   @id @default(cuid())
+  schoolId         String
+  name             String
+  dayOfWeek        Int
+  startTimeMinutes Int
+  endTimeMinutes   Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  school    School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schedules Schedule[]
+}
+
+// -------------------------------------------
+// Schedule (alocação em um slot)
+// -------------------------------------------
+
+model Schedule {
+  id           String   @id @default(cuid())
+  allocationId String
+  timeSlotId   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  allocation Allocation @relation(fields: [allocationId], references: [id], onDelete: Cascade)
+  timeSlot   TimeSlot   @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+
+  @@unique([allocationId, timeSlotId])
+}

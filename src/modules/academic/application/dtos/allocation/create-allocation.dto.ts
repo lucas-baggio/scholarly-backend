@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAllocationDto {
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'Teacher ID is required' })
   teacherId!: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'School ID is required' })
   schoolId!: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'Subject ID is required' })
   subjectId!: string;
 }

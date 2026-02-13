@@ -25,7 +25,20 @@ import { InMemorySubjectRepository } from './infrastructure/persistence/subject/
 import { InMemoryAllocationRepository } from './infrastructure/persistence/allocation/in-memory-allocation.repository';
 import { InMemoryTimeSlotRepository } from './infrastructure/persistence/scheduling/in-memory-time-slot.repository';
 import { InMemoryScheduleRepository } from './infrastructure/persistence/scheduling/in-memory-schedule.repository';
+import { PrismaSchoolRepository } from './infrastructure/persistence/school/prisma-school.repository';
+import { PrismaSubjectRepository } from './infrastructure/persistence/subject/prisma-subject.repository';
+import { PrismaAllocationRepository } from './infrastructure/persistence/allocation/prisma-allocation.repository';
+import { PrismaTimeSlotRepository } from './infrastructure/persistence/scheduling/prisma-time-slot.repository';
+import { PrismaScheduleRepository } from './infrastructure/persistence/scheduling/prisma-schedule.repository';
+import { SchoolMapper } from './infrastructure/persistence/school/school.mapper';
+import { SubjectMapper } from './infrastructure/persistence/subject/subject.mapper';
+import { AllocationMapper } from './infrastructure/persistence/allocation/allocation.mapper';
+import { TimeSlotMapper } from './infrastructure/persistence/scheduling/time-slot.mapper';
+import { ScheduleMapper } from './infrastructure/persistence/scheduling/schedule.mapper';
 import { UserModules } from '../users/users.module';
+import { PrismaService } from '../../prisma/prisma.service';
+
+const usePrisma = !!process.env.DATABASE_URL;
 
 @Module({
   imports: [UserModules],
@@ -50,23 +63,43 @@ import { UserModules } from '../users/users.module';
     ListSchoolGridUseCase,
     {
       provide: SchoolRepository,
-      useClass: InMemorySchoolRepository,
+      useFactory: (prisma: PrismaService) =>
+        usePrisma
+          ? new PrismaSchoolRepository(prisma, SchoolMapper)
+          : new InMemorySchoolRepository(),
+      inject: [PrismaService],
     },
     {
       provide: SubjectRepository,
-      useClass: InMemorySubjectRepository,
+      useFactory: (prisma: PrismaService) =>
+        usePrisma
+          ? new PrismaSubjectRepository(prisma, SubjectMapper)
+          : new InMemorySubjectRepository(),
+      inject: [PrismaService],
     },
     {
       provide: AllocationRepository,
-      useClass: InMemoryAllocationRepository,
+      useFactory: (prisma: PrismaService) =>
+        usePrisma
+          ? new PrismaAllocationRepository(prisma, AllocationMapper)
+          : new InMemoryAllocationRepository(),
+      inject: [PrismaService],
     },
     {
       provide: TimeSlotRepository,
-      useClass: InMemoryTimeSlotRepository,
+      useFactory: (prisma: PrismaService) =>
+        usePrisma
+          ? new PrismaTimeSlotRepository(prisma, TimeSlotMapper)
+          : new InMemoryTimeSlotRepository(),
+      inject: [PrismaService],
     },
     {
       provide: ScheduleRepository,
-      useClass: InMemoryScheduleRepository,
+      useFactory: (prisma: PrismaService) =>
+        usePrisma
+          ? new PrismaScheduleRepository(prisma, ScheduleMapper)
+          : new InMemoryScheduleRepository(),
+      inject: [PrismaService],
     },
   ],
   exports: [
