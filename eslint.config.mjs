@@ -47,4 +47,14 @@ export default tseslint.config(
       '@typescript-eslint/no-redundant-type-constituents': 'off',
     },
   },
+  // Testes E2E: response.body e request() retornam tipos amplos
+  {
+    files: ['src/test/**/*.e2e-spec.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+    },
+  },
 );
